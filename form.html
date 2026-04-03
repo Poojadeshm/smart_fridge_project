@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="{{ lang }}">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{ T.form_title }} — {{ T.app_name }}</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=DM+Sans:wght@300;400;500;600&family=Noto+Sans+Devanagari:wght@400;500;600&family=Noto+Sans+Gujarati:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#faf7f2;--surface:#fff;--card:#f5f0e8;--border:#e8dfd0;
+  --gold:#c9973a;--gold-light:#e8c87a;--gold-dark:#9a6f22;
+  --text:#2c2416;--muted:#7a6a54;
+  --green:#3d7a4f;--orange:#c4612a;--red:#b33a3a;--purple:#6b4fa0;
+  --font:'DM Sans','Noto Sans Devanagari','Noto Sans Gujarati',sans-serif;
+  --font-serif:'Playfair Display',serif;
+  --shadow:0 2px 16px rgba(0,0,0,0.07);--shadow-lg:0 8px 40px rgba(0,0,0,0.11);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);
+  min-height:100vh;display:flex;flex-direction:column;align-items:center;
+  padding:2rem 1rem 4rem;position:relative;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;
+  background-image:radial-gradient(circle,#c9973a14 1px,transparent 1px);
+  background-size:28px 28px;pointer-events:none;z-index:0;}
+
+/* HEADER BAR */
+.top-nav{position:fixed;top:0;left:0;right:0;z-index:50;
+  background:rgba(250,247,242,0.96);backdrop-filter:blur(12px);
+  border-bottom:1px solid var(--border);padding:0.7rem 1.5rem;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 2px 12px rgba(0,0,0,0.05);}
+.back-link{color:var(--muted);text-decoration:none;font-size:0.82rem;font-weight:500;
+  display:flex;align-items:center;gap:0.4rem;padding:0.4rem 0.8rem;
+  background:var(--card);border:1px solid var(--border);border-radius:8px;transition:all 0.2s;}
+.back-link:hover{color:var(--gold);border-color:var(--gold);}
+
+/* Lang switcher */
+.lang-switcher{display:flex;align-items:center;gap:0;
+  background:var(--card);border:1px solid var(--border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow);}
+.lang-btn{padding:0.38rem 0.7rem;font-family:var(--font);font-size:0.76rem;font-weight:600;
+  color:var(--muted);text-decoration:none;transition:all 0.18s;
+  border-right:1px solid var(--border);display:flex;align-items:center;gap:0.3rem;}
+.lang-btn:last-child{border-right:none;}
+.lang-btn:hover{background:rgba(201,151,58,0.08);color:var(--gold-dark);}
+.lang-btn.active{background:linear-gradient(135deg,var(--gold-dark),var(--gold));color:#fff;font-weight:700;}
+
+.wrapper{position:relative;z-index:1;width:100%;max-width:510px;
+  margin-top:4rem;animation:rise 0.5s ease both;}
+@keyframes rise{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+.brand{text-align:center;margin-bottom:1.6rem;}
+.brand-mark{width:60px;height:60px;border-radius:18px;margin:0 auto 0.8rem;
+  background:linear-gradient(135deg,var(--gold-dark),var(--gold),var(--gold-light));
+  display:flex;align-items:center;justify-content:center;font-size:1.7rem;
+  box-shadow:0 6px 22px rgba(201,151,58,0.32);}
+.brand h1{font-family:var(--font-serif);font-size:1.5rem;font-weight:700;}
+.brand h1 em{color:var(--gold);font-style:italic;}
+.brand p{color:var(--muted);font-size:0.8rem;margin-top:0.28rem;}
+
+/* Category grid */
+.cat-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:0.45rem;margin-bottom:1.4rem;}
+.cat-btn{background:var(--surface);border:1.5px solid var(--border);border-radius:11px;
+  padding:0.65rem 0.25rem;cursor:pointer;text-align:center;transition:all 0.2s;
+  color:var(--muted);box-shadow:var(--shadow);}
+.cat-btn .ci{font-size:1.3rem;display:block;margin-bottom:0.22rem;}
+.cat-btn .cn{font-size:0.62rem;font-weight:600;}
+.cat-btn:hover{border-color:var(--gold);color:var(--text);transform:translateY(-2px);}
+.cat-btn.active{border-color:var(--gold);background:linear-gradient(135deg,#fff9ee,#fff3d6);
+  color:var(--gold-dark);box-shadow:0 4px 14px rgba(201,151,58,0.18);}
+
+.card{background:var(--surface);border:1px solid var(--border);border-radius:19px;
+  padding:1.7rem;box-shadow:var(--shadow-lg);position:relative;overflow:hidden;}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--gold-dark),var(--gold),var(--gold-light),var(--gold));}
+
+.field{margin-bottom:1rem;}
+label{display:block;font-size:0.71rem;font-weight:600;color:var(--muted);
+  letter-spacing:0.06em;text-transform:uppercase;margin-bottom:0.42rem;}
+label .hint{font-weight:400;text-transform:none;letter-spacing:0;color:var(--gold);}
+input[type=text],input[type=date],input[type=number],textarea{
+  width:100%;background:var(--card);border:1.5px solid var(--border);border-radius:10px;
+  color:var(--text);font-family:var(--font);font-size:0.9rem;
+  padding:0.72rem 0.9rem;outline:none;transition:all 0.2s;-webkit-appearance:none;}
+input:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(201,151,58,0.1);background:#fff;}
+input::placeholder,textarea::placeholder{color:#b5a590;}
+textarea{resize:none;height:68px;line-height:1.5;}
+
+/* Name shelf tag */
+.name-row{position:relative;}
+.shelf-tag{position:absolute;right:0.75rem;top:50%;transform:translateY(-50%);
+  font-size:0.67rem;font-weight:700;color:var(--gold-dark);
+  background:rgba(201,151,58,0.1);padding:0.18rem 0.5rem;border-radius:6px;display:none;}
+
+/* Expiry preview */
+.ep-card{background:var(--card);border:1.5px solid var(--border);border-radius:12px;
+  padding:0.9rem 1rem;margin-top:0.55rem;display:none;}
+.ep-card.show{display:block;animation:fadeIn 0.3s ease;}
+.ep-card.good{border-color:#b8d8c0;background:#f3faf5;}
+.ep-card.warn{border-color:#e8c898;background:#fdf8ee;}
+.ep-card.bad {border-color:#e8b0b0;background:#fdf3f3;}
+.ep-row{display:flex;align-items:center;gap:0.5rem;margin-bottom:0.35rem;}
+.ep-status{font-size:0.69rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;}
+.ep-status.good{color:var(--green);}.ep-status.warn{color:var(--orange);}.ep-status.bad{color:var(--red);}
+.ep-date{font-size:0.95rem;font-weight:700;color:var(--text);font-family:var(--font-serif);}
+.ep-sub{font-size:0.76rem;color:var(--muted);}
+
+/* Recipe chips */
+.recipe-chips{margin-top:0.65rem;padding-top:0.65rem;border-top:1px solid var(--border);}
+.recipe-chips h5{font-size:0.67rem;font-weight:700;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--orange);margin-bottom:0.4rem;}
+.rchip{display:inline-flex;align-items:center;gap:0.3rem;
+  background:rgba(196,97,42,0.07);border:1px solid rgba(196,97,42,0.2);
+  color:var(--orange);font-size:0.71rem;font-weight:600;
+  padding:0.22rem 0.6rem;border-radius:999px;margin:0.15rem 0.15rem 0 0;}
+
+/* Jewelry oxidation */
+.jewelry-ox{margin-top:0.7rem;padding-top:0.7rem;border-top:1px solid var(--border);}
+.jewelry-ox h5{font-size:0.67rem;font-weight:700;letter-spacing:0.06em;
+  text-transform:uppercase;margin-bottom:0.65rem;color:var(--muted);}
+.ox-timeline{display:flex;gap:0.35rem;margin-bottom:0.65rem;}
+.ot-step{flex:1;text-align:center;}
+.ot-dot{width:100%;height:5px;border-radius:999px;margin-bottom:0.32rem;}
+.ot-label{font-size:0.56rem;color:var(--muted);line-height:1.3;}
+.cs-card{background:#fff;border:1.5px solid var(--gold);border-radius:10px;padding:0.7rem 0.8rem;}
+.cs-top{display:flex;align-items:center;gap:0.45rem;margin-bottom:0.32rem;}
+.cs-icon{font-size:1.1rem;}
+.cs-stage{font-size:0.77rem;font-weight:700;color:var(--gold-dark);}
+.cs-color{font-size:0.72rem;color:var(--muted);margin-bottom:0.32rem;}
+.cs-care{font-size:0.72rem;color:var(--text);line-height:1.5;}
+
+/* Toxic */
+.toxic-sec{margin-top:0.7rem;padding-top:0.7rem;border-top:1px solid var(--border);}
+.toxic-sec h5{font-size:0.67rem;font-weight:700;letter-spacing:0.06em;
+  text-transform:uppercase;color:var(--red);margin-bottom:0.4rem;}
+.tchip{display:inline-flex;font-size:0.69rem;font-weight:600;
+  padding:0.22rem 0.55rem;border-radius:999px;margin:0.15rem 0.15rem 0 0;}
+.tchip.critical{background:rgba(179,58,58,0.07);color:var(--red);border:1px solid rgba(179,58,58,0.18);}
+.tchip.high{background:rgba(196,97,42,0.07);color:var(--orange);border:1px solid rgba(196,97,42,0.18);}
+.tchip.moderate{background:rgba(107,79,160,0.07);color:var(--purple);border:1px solid rgba(107,79,160,0.18);}
+
+/* Loss alert */
+.loss-alert{background:rgba(179,58,58,0.06);border:1px solid rgba(179,58,58,0.2);
+  border-radius:8px;padding:0.55rem 0.85rem;margin-top:0.42rem;
+  font-size:0.77rem;color:var(--red);display:none;font-weight:500;}
+.loss-alert.show{display:block;}
+
+/* Override */
+.override-row{display:flex;align-items:center;gap:0.45rem;margin-top:0.6rem;
+  cursor:pointer;font-size:0.78rem;color:var(--muted);}
+.override-row input{accent-color:var(--gold);cursor:pointer;width:14px;height:14px;}
+.override-sec{display:none;margin-top:0.6rem;}
+.override-sec.show{display:block;animation:fadeIn 0.3s ease;}
+
+/* Price */
+.price-wrap{position:relative;}
+.price-sym{position:absolute;left:0.88rem;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:0.88rem;}
+.price-wrap input{padding-left:1.75rem;}
+
+.divider{text-align:center;color:var(--border);font-size:0.7rem;
+  letter-spacing:0.1em;margin:0.9rem 0;position:relative;}
+.divider::before,.divider::after{content:'';position:absolute;top:50%;width:36%;height:1px;background:var(--border);}
+.divider::before{left:0;}.divider::after{right:0;}
+
+.submit-btn{width:100%;padding:0.92rem;margin-top:0.75rem;
+  background:linear-gradient(135deg,var(--gold-dark),var(--gold));
+  color:#fff;font-family:var(--font);font-size:0.93rem;font-weight:700;
+  border:none;border-radius:12px;cursor:pointer;
+  box-shadow:0 4px 18px rgba(201,151,58,0.38);transition:all 0.2s;letter-spacing:0.02em;}
+.submit-btn:hover{transform:translateY(-2px);box-shadow:0 8px 26px rgba(201,151,58,0.48);}
+
+.flash{padding:0.72rem 1rem;border-radius:10px;margin-bottom:0.9rem;
+  font-size:0.82rem;font-weight:500;display:flex;align-items:center;gap:0.5rem;}
+.flash.error{background:rgba(179,58,58,0.07);color:var(--red);border:1px solid rgba(179,58,58,0.2);}
+.flash.success{background:rgba(61,122,79,0.07);color:var(--green);border:1px solid rgba(61,122,79,0.2);}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<!-- TOP NAV with language switcher -->
+<div class="top-nav">
+  <a href="{{ url_for('index') }}" class="back-link">← {{ T.back_dashboard }}</a>
+  <div class="lang-switcher">
+    <a href="{{ url_for('set_lang', lang='en') }}" class="lang-btn {% if lang=='en' %}active{% endif %}"> 🔰ENGLISH</a>
+    <a href="{{ url_for('set_lang', lang='hi') }}" class="lang-btn {% if lang=='hi' %}active{% endif %}"> 🪷हिंदी</a>
+    <a href="{{ url_for('set_lang', lang='gu') }}" class="lang-btn {% if lang=='gu' %}active{% endif %}">🏵️ ગુજરાતી</a>
+  </div>
+</div>
+
+<div class="wrapper">
+  <div class="brand">
+    <div class="brand-mark">🏺</div>
+    <h1>Predicta<em>Shelf</em></h1>
+    <p>{{ T.form_tagline }}</p>
+  </div>
+
+  {% with messages = get_flashed_messages() %}{% if messages %}{% for msg in messages %}
+    {% set p = msg.split('|') %}
+    <div class="flash {{ p[0] }}">{{ '✅' if p[0]=='success' else '❌' }} {{ p[1] }}</div>
+  {% endfor %}{% endif %}{% endwith %}
+
+  <!-- Category -->
+  <div class="cat-grid">
+    <div class="cat-btn active" onclick="selectCat(this,'Food')"><span class="ci">🍎</span><span class="cn">{{ T.cat_food }}</span></div>
+    <div class="cat-btn" onclick="selectCat(this,'Cosmetics')"><span class="ci">💄</span><span class="cn">{{ T.cat_beauty }}</span></div>
+    <div class="cat-btn" onclick="selectCat(this,'Groceries')"><span class="ci">🛒</span><span class="cn">{{ T.cat_grocery }}</span></div>
+    <div class="cat-btn" onclick="selectCat(this,'Medicine')"><span class="ci">💊</span><span class="cn">{{ T.cat_medicine }}</span></div>
+    <div class="cat-btn" onclick="selectCat(this,'Jewelry')"><span class="ci">💍</span><span class="cn">{{ T.cat_jewelry }}</span></div>
+  </div>
+
+  <div class="card">
+    <form action="{{ url_for('add_product') }}" method="POST">
+      <input type="hidden" name="category" id="hiddenCat" value="Food">
+
+      <div class="field">
+        <label>{{ T.label_name }}</label>
+        <div class="name-row">
+          <input type="text" name="name" id="productName" required autocomplete="off"
+            placeholder="{{ T.name_placeholder }}" oninput="onNameChange(this.value)">
+          <span class="shelf-tag" id="shelfTag"></span>
+        </div>
+      </div>
+
+      <div class="field">
+        <label>{{ T.label_purchase }} <span class="hint">{{ T.purchase_hint }}</span></label>
+        <input type="date" name="purchase_date" id="purchaseDate" onchange="updatePreview()" max="">
+        <div class="ep-card" id="epCard">
+          <div class="ep-row"><span id="epIcon">✅</span><span class="ep-status good" id="epStatus"></span></div>
+          <div class="ep-date" id="epDate"></div>
+          <div class="ep-sub" id="epSub"></div>
+          <div class="recipe-chips" id="recipeSection" style="display:none">
+            <h5>{{ T.you_can_make }}</h5>
+            <div id="recipeChipsInner"></div>
+          </div>
+          <div class="jewelry-ox" id="jewelryOxSection" style="display:none">
+            <h5 id="oxTitle"></h5>
+            <div class="ox-timeline" id="oxTimeline"></div>
+            <div class="cs-card" id="csCard"></div>
+          </div>
+          <div class="toxic-sec" id="toxicSection" style="display:none">
+            <h5>{{ T.toxic_watch }}</h5>
+            <div id="toxicInner"></div>
+          </div>
+        </div>
+      </div>
+
+      <label class="override-row">
+        <input type="checkbox" id="ovCheck" onchange="toggleOverride(this.checked)">
+        {{ T.manual_override }}
+      </label>
+      <div class="override-sec" id="ovSec">
+        <div class="field" style="margin-bottom:0">
+          <label>{{ T.label_manual_expiry }}</label>
+          <input type="date" name="expiry_override" id="expiryOverride">
+        </div>
+      </div>
+
+      <div class="divider">· · ·</div>
+
+      <div class="field">
+        <label>{{ T.label_price }} <span class="hint" style="font-size:0.68rem">{{ T.price_hint }}</span></label>
+        <div class="price-wrap">
+          <span class="price-sym">₹</span>
+          <input type="number" name="price" id="priceInput" placeholder="0" min="0" step="1" oninput="checkLoss()">
+        </div>
+        <div class="loss-alert" id="lossAlert"></div>
+      </div>
+
+      <div class="field">
+        <label>{{ T.label_note }} <span class="hint" style="font-size:0.68rem">{{ T.note_hint }}</span></label>
+        <textarea name="note" placeholder="{{ T.note_placeholder }}"></textarea>
+      </div>
+
+      <button type="submit" class="submit-btn">{{ T.save_btn }}</button>
+    </form>
+  </div>
+</div>
+
+<script>
+const LANG = "{{ lang }}";
+const SHELF={milk:3,doodh:3,dudh:3,cream:5,butter:30,cheese:14,paneer:4,yogurt:7,dahi:5,curd:5,bread:6,pav:4,roti:2,egg:21,anda:21,inda:21,chicken:2,mutton:2,fish:2,tomato:5,onion:30,potato:14,carrot:10,spinach:4,palak:4,apple:14,banana:5,kela:5,mango:5,keri:5,juice:3,rice:365,flour:180,atta:180,maida:180,oil:365,ghee:180,sugar:730,dal:180,noodles:180,maggi:180,biscuit:90,chocolate:180,chips:60,sauce:30,ketchup:30,pickle:180,jam:90,honey:730,moisturizer:365,lotion:365,sunscreen:180,foundation:180,mascara:90,kajal:180,shampoo:365,conditioner:365,'hair oil':365,'body wash':365,soap:365,deodorant:365,perfume:730,'nail polish':365,tablet:365,capsule:365,syrup:180,tea:730,coffee:365,oats:365};
+const DEFAULTS={Food:7,Cosmetics:365,Medicine:365,Groceries:90,Jewelry:730};
+const RECIPES={milk:['Kheer','Paneer','Chai'],doodh:['Kheer','Chai'],bread:['French Toast','Upma','Pakora'],egg:['Omelette','Bhurji'],anda:['Omelette'],banana:['Smoothie','Pancake'],kela:['Smoothie'],tomato:['Soup','Chutney'],paneer:['Bhurji','Tikka'],yogurt:['Raita','Lassi'],dahi:['Raita','Lassi']};
+const TOXIC={Food:[{n:'MSG (E621)',r:'high'},{n:'Sodium Benzoate',r:'moderate'},{n:'Trans Fat',r:'high'},{n:'Artificial Colors',r:'high'}],Cosmetics:[{n:'Parabens',r:'high'},{n:'SLS/SLES',r:'moderate'},{n:'Formaldehyde',r:'critical'},{n:'Mercury',r:'critical'}],Groceries:[{n:'BHA/BHT',r:'moderate'},{n:'Sodium Nitrate',r:'high'}],Medicine:[{n:'Expired Compounds',r:'critical'}],Jewelry:[{n:'Nickel Allergy',r:'high'},{n:'Lead',r:'critical'},{n:'Cadmium',r:'critical'}]};
+const OXIDATION={silver:{icon:'🥈',stages:[{days:0,label:{en:'Brand New',hi:'बिल्कुल नया',gu:'બિલ્કુલ નવું'},color:{en:'Brilliant silver',hi:'चमकदार चांदी',gu:'ચળકતી ચાંદી'},care:{en:'Keep in anti-tarnish pouch.',hi:'एंटी-टार्निश पाउच में रखें।',gu:'એન્ટી-ટાર્નિશ પાઉચમાં રાખો.'},pct:100,dot:'#e8e8e8'},{days:90,label:{en:'Light Tarnish',hi:'हल्का कालापन',gu:'હળવો ડાઘ'},color:{en:'Yellowish tint',hi:'पीलापन',gu:'પીળાશ'},care:{en:'Baking soda + water paste.',hi:'बेकिंग सोडा + पानी का पेस्ट।',gu:'બેકિંગ સોડા + પાણીનો પેસ્ટ.'},pct:65,dot:'#c8c0a0'},{days:270,label:{en:'Heavy Tarnish',hi:'बहुत काली',gu:'ઘણી કાળી'},color:{en:'Dark brown coating',hi:'गहरा भूरा',gu:'ઘેરો ભૂરો'},care:{en:'Professional cleaning needed.',hi:'प्रोफेशनल सफाई जरूरी।',gu:'પ્રૉફેશનલ સફાઈ જરૂરી.'},pct:25,dot:'#806040'},{days:365,label:{en:'Oxidized',hi:'पूरी काली',gu:'સંપૂર્ણ કાળી'},color:{en:'Fully black',hi:'पूरी तरह काली',gu:'સંપૂર્ણ કાળી'},care:{en:'Silver dip cleaner needed.',hi:'सिल्वर डिप क्लीनर जरूरी।',gu:'સિલ્વર ડિપ ક્લીનર જરૂરી.'},pct:10,dot:'#333'}]},gold:{icon:'🥇',stages:[{days:0,label:{en:'Brand New',hi:'बिल्कुल नया',gu:'બિલ્કુલ નવું'},color:{en:'Brilliant warm gold',hi:'चमकदार सोना',gu:'ચળકતું સોનું'},care:{en:'Avoid harsh chemicals.',hi:'कठोर रसायनों से बचें।',gu:'કઠોર રસાયણોથી બચો.'},pct:100,dot:'#f0d060'},{days:180,label:{en:'Dull Sheen',hi:'फीकी चमक',gu:'ઝાંખી ચળકાટ'},color:{en:'Less reflective',hi:'कम चमकदार',gu:'ઓછી ચળકાટ'},care:{en:'Warm soapy water clean.',hi:'गर्म साबुन पानी से साफ करें।',gu:'ગરમ સાબુ પાણીથી સાફ.'},pct:72,dot:'#c09830'},{days:730,label:{en:'Faded',hi:'बहुत फीकी',gu:'ઘણી ઝાંખી'},color:{en:'Base metal showing',hi:'नीचे की धातु दिख रही',gu:'નીચેની ધાતુ દેખાય'},care:{en:'Re-plating may be needed.',hi:'री-प्लेटिंग की जरूरत।',gu:'ફરી પ્લેટિંગ કરાવવી.'},pct:30,dot:'#806010'}]},copper:{icon:'🟤',stages:[{days:0,label:{en:'Brand New',hi:'बिल्कुल नया',gu:'બિલ્કુલ નવું'},color:{en:'Bright reddish-orange',hi:'लाल-नारंगी',gu:'લાલ-નારંગી'},care:{en:'Apply clear nail polish.',hi:'क्लियर नेल पॉलिश लगाएं।',gu:'ક્લિયર નેઇલ પૉલિશ લગાવો.'},pct:100,dot:'#e07040'},{days:90,label:{en:'Dark Brown',hi:'गहरा भूरा',gu:'ઘેરો ભૂરો'},color:{en:'Brown patches',hi:'भूरे धब्बे',gu:'ભૂરા ડાઘ'},care:{en:'Ketchup rub works well!',hi:'केचप रगड़ें — काम करता है!',gu:'કેચઅપ ઘસો — ખૂબ સારું!'},pct:35,dot:'#602810'},{days:180,label:{en:'Green Patina',hi:'हरा रंग',gu:'લીલો ડાઘ'},color:{en:'Green verdigris',hi:'हरा-नीला',gu:'લીલો-વાદળી'},care:{en:'Vinegar + salt paste, scrub.',hi:'सिरका + नमक पेस्ट लगाएं।',gu:'સરકો + મીઠુ ઘસો.'},pct:15,dot:'#406040'}]}};
+
+const T_msgs = {
+  en:{already:'Already Expired!',today:'Expires Today!',good:'days fresh',warn_days:'days remaining',crit_days:'Only {n} day(s)!',msg_already:'This item has likely already gone bad.',msg_today:'Use it immediately!',msg_warn:'Plan to use this week.',msg_good:'Based on {n}-day shelf life.',metal_owned:'days owned',you_can_make:'🍳 You can still make',loss_exp:'💸 Expired! ₹{p} wasted.',loss_soon:'💸 Expires in {n} day(s) — ₹{p} at risk!'},
+  hi:{already:'पहले ही एक्सपायर!',today:'आज एक्सपायर!',good:'दिन ताज़ा',warn_days:'दिन बचे',crit_days:'सिर्फ {n} दिन!',msg_already:'यह आइटम शायद खराब हो गया है।',msg_today:'तुरंत इस्तेमाल करें!',msg_warn:'इस हफ्ते इस्तेमाल करें।',msg_good:'{n} दिन की शेल्फ लाइफ।',metal_owned:'दिन से आपके पास',you_can_make:'🍳 अभी भी बना सकती हैं',loss_exp:'💸 एक्सपायर! ₹{p} बर्बाद।',loss_soon:'💸 {n} दिन में — ₹{p} का नुकसान!'},
+  gu:{already:'પહેલેથી એક્સ્પાયર!',today:'આજે એક્સ્પાયર!',good:'દિવસ તાજી',warn_days:'દિવસ બાકી',crit_days:'ફક્ત {n} દિવસ!',msg_already:'આ આઇટમ કદાચ બગડી ગઈ છે।',msg_today:'તરત ઉપયોગ કરો!',msg_warn:'આ અઠવાડિયે ઉપયોગ કરો.',msg_good:'{n} દિવસની શેલ્ફ લાઇફ.',metal_owned:'દિવસથી તમારી પાસે',you_can_make:'🍳 હજી બનાવી શકો',loss_exp:'💸 એક્સ્પાયર! ₹{p} બર્બાદ.',loss_soon:'💸 {n} દિવસમાં — ₹{p} ખોટ!'}
+};
+
+let currentCat='Food', computedExpiry='', currentName='';
+const TM = T_msgs[LANG] || T_msgs.en;
+
+function getShelf(name,cat){const n=name.toLowerCase();for(const[k,v]of Object.entries(SHELF)){if(n.includes(k))return v;}return DEFAULTS[cat]||7;}
+function detectMetal(name){const n=name.toLowerCase();for(const m of['silver','gold','copper','brass','platinum']){if(n.includes(m))return m;}if(n.includes('chandi')||n.includes('चांदी')||n.includes('ચાંદી'))return'silver';if(n.includes('sona')||n.includes('सोना')||n.includes('સોનું'))return'gold';if(n.includes('tamba')||n.includes('तांबा')||n.includes('તાંબુ'))return'copper';return null;}
+function getCurrentStage(metal,daysOwned){const s=OXIDATION[metal].stages;let cur=s[0];for(const st of s){if(daysOwned>=st.days)cur=st;}return cur;}
+
+function selectCat(el,cat){document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));el.classList.add('active');document.getElementById('hiddenCat').value=cat;currentCat=cat;onNameChange(document.getElementById('productName').value);}
+
+function onNameChange(val){
+  currentName=val;
+  const days=getShelf(val,currentCat);
+  const tag=document.getElementById('shelfTag');
+  if(val.length>1){tag.textContent=`~${days}d`;tag.style.display='block';}else tag.style.display='none';
+  updatePreview();showToxic();
+}
+
+function updatePreview(){
+  const name=document.getElementById('productName').value;
+  const purchaseStr=document.getElementById('purchaseDate').value;
+  if(!name&&!purchaseStr)return;
+  const purchase=purchaseStr?new Date(purchaseStr):new Date();
+  const days=getShelf(name,currentCat);
+  const expiry=new Date(purchase);expiry.setDate(expiry.getDate()+days);
+  const today=new Date();today.setHours(0,0,0,0);
+  const diff=Math.ceil((expiry-today)/86400000);
+  computedExpiry=expiry.toISOString().split('T')[0];
+
+  const card=document.getElementById('epCard');
+  const icon=document.getElementById('epIcon');
+  const status=document.getElementById('epStatus');
+  const dateEl=document.getElementById('epDate');
+  const sub=document.getElementById('epSub');
+
+  card.className='ep-card show';
+  dateEl.textContent=expiry.toLocaleDateString(LANG==='hi'?'hi-IN':LANG==='gu'?'gu-IN':'en-IN',{day:'numeric',month:'long',year:'numeric'});
+
+  if(diff<0){card.classList.add('bad');icon.textContent='💀';status.className='ep-status bad';status.textContent=TM.already;sub.textContent=TM.msg_already;}
+  else if(diff===0){card.classList.add('bad');icon.textContent='🚨';status.className='ep-status bad';status.textContent=TM.today;sub.textContent=TM.msg_today;showRecipes(name);}
+  else if(diff<=2){card.classList.add('warn');icon.textContent='⚡';status.className='ep-status warn';status.textContent=TM.crit_days.replace('{n}',diff);sub.textContent=TM.msg_warn;showRecipes(name);}
+  else if(diff<=7){card.classList.add('warn');icon.textContent='⚠️';status.className='ep-status warn';status.textContent=`${diff} ${TM.warn_days}`;sub.textContent=TM.msg_warn;showRecipes(name);}
+  else{icon.textContent='✅';status.className='ep-status good';status.textContent=`${diff} ${TM.good}`;sub.textContent=TM.msg_good.replace('{n}',days);document.getElementById('recipeSection').style.display='none';}
+
+  // Jewelry oxidation
+  const metal=detectMetal(name);
+  if(currentCat==='Jewelry'&&metal&&purchaseStr){
+    const pd=new Date(purchaseStr);
+    const daysOwned=Math.floor((today-pd)/86400000);
+    showJewelryOx(metal,daysOwned);
+  }else{document.getElementById('jewelryOxSection').style.display='none';}
+  checkLoss();
+}
+
+function showRecipes(name){
+  if(['Cosmetics','Medicine','Jewelry'].includes(currentCat)){document.getElementById('recipeSection').style.display='none';return;}
+  const n=name.toLowerCase();let found=[];
+  for(const[k,v]of Object.entries(RECIPES)){if(n.includes(k)){found=v;break;}}
+  const sec=document.getElementById('recipeSection');
+  const inner=document.getElementById('recipeChipsInner');
+  if(found.length){inner.innerHTML=found.map(r=>`<span class="rchip">🍳 ${r}</span>`).join('');sec.style.display='block';}
+  else sec.style.display='none';
+  document.querySelector('.recipe-chips h5').textContent=TM.you_can_make;
+}
+
+function showJewelryOx(metal,daysOwned){
+  const ox=OXIDATION[metal];if(!ox){document.getElementById('jewelryOxSection').style.display='none';return;}
+  const stage=getCurrentStage(metal,daysOwned);
+  const sec=document.getElementById('jewelryOxSection');
+  document.getElementById('oxTitle').textContent=`${ox.icon} ${metal.charAt(0).toUpperCase()+metal.slice(1)} — ${daysOwned} ${TM.metal_owned}`;
+  document.getElementById('oxTimeline').innerHTML=ox.stages.map(s=>{
+    const isActive=stage===s;
+    return`<div class="ot-step"><div class="ot-dot" style="background:${s.dot};${isActive?'outline:2px solid var(--gold);outline-offset:2px':'opacity:0.35'}"></div><div class="ot-label" style="${isActive?'font-weight:700;color:var(--gold-dark)':''}">${s.label[LANG]||s.label.en}</div></div>`;
+  }).join('');
+  document.getElementById('csCard').innerHTML=`<div class="cs-top"><span class="cs-icon">${ox.icon}</span><span class="cs-stage">${stage.label[LANG]||stage.label.en}</span></div><div class="cs-color">${stage.color[LANG]||stage.color.en}</div><div class="cs-care">💡 ${stage.care[LANG]||stage.care.en}</div>`;
+  sec.style.display='block';
+}
+
+function showToxic(){
+  const toxics=TOXIC[currentCat]||[];
+  const sec=document.getElementById('toxicSection');
+  const inner=document.getElementById('toxicInner');
+  if(toxics.length){inner.innerHTML=toxics.map(t=>`<span class="tchip ${t.r}">⚠️ ${t.n}</span>`).join('');sec.style.display='block';}
+  else sec.style.display='none';
+}
+
+function toggleOverride(c){document.getElementById('ovSec').className=c?'override-sec show':'override-sec';}
+
+function checkLoss(){
+  const price=parseFloat(document.getElementById('priceInput').value)||0;
+  const alert=document.getElementById('lossAlert');
+  if(!computedExpiry||price<=0){alert.classList.remove('show');return;}
+  const exp=new Date(computedExpiry);const today=new Date();today.setHours(0,0,0,0);
+  const diff=Math.ceil((exp-today)/86400000);
+  if(diff<=3){alert.classList.add('show');alert.textContent=diff<0?TM.loss_exp.replace('{p}',price):TM.loss_soon.replace('{n}',diff).replace('{p}',price);}
+  else alert.classList.remove('show');
+}
+
+const todayStr=new Date().toISOString().split('T')[0];
+document.getElementById('purchaseDate').value=todayStr;
+document.getElementById('purchaseDate').max=todayStr;
+updatePreview();showToxic();
+</script>
+</body>
+</html>
