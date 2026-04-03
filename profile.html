@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Profile - PredictaShelf</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=DM+Sans:wght@400;600&display=swap" rel="stylesheet">
+
+<style>
+body{
+    font-family: 'DM Sans', sans-serif;
+    background:#faf7f2;
+    margin:0;
+}
+
+/* NAVBAR */
+.navbar{
+    display:flex;
+    justify-content:space-between;
+    padding:15px 30px;
+    background:white;
+    box-shadow:0 2px 10px rgba(0,0,0,0.05);
+}
+.logo{
+    font-family:'Playfair Display';
+    font-size:20px;
+}
+.logo span{ color:#c9973a; }
+
+.nav-buttons a{
+    margin-left:10px;
+    text-decoration:none;
+    padding:8px 15px;
+    border-radius:10px;
+    background:#eee;
+    color:black;
+}
+
+/* MAIN */
+.container{
+    max-width:1100px;
+    margin:30px auto;
+    display:flex;
+    gap:20px;
+}
+
+/* LEFT CARD */
+.left{
+    width:30%;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+    text-align:center;
+}
+
+.avatar{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+    background:linear-gradient(135deg,#6a5acd,#c9973a);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    color:white;
+    font-size:32px;
+    margin:auto;
+}
+
+.stats{
+    background:#f5f2ec;
+    margin-top:15px;
+    padding:10px;
+    border-radius:10px;
+}
+
+/* RIGHT */
+.right{
+    width:70%;
+    background:white;
+    padding:20px;
+    border-radius:15px;
+}
+
+input{
+    width:100%;
+    padding:10px;
+    margin:10px 0;
+    border-radius:10px;
+    border:1px solid #ddd;
+}
+
+button{
+    width:100%;
+    padding:12px;
+    border:none;
+    border-radius:10px;
+    background:linear-gradient(135deg,#6a5acd,#c9973a);
+    color:white;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">Predicta<span>Shelf</span></div>
+    <div class="nav-buttons">
+        <a href="/index">🏠 Home</a>
+        <a href="/profile">👤 Profile</a>
+        <a href="/logout">🚪 Logout</a>
+    </div>
+</div>
+
+<!-- MAIN -->
+<div class="container">
+
+<!-- LEFT -->
+<div class="left">
+
+    <div class="avatar">
+        {{ user.name[0].upper() }}
+    </div>
+
+    <h2>{{ user.name }}</h2>
+    <p>@{{ user.username }}</p>
+
+    <div class="stats">📦 Your Products: {{ user.products }}</div>
+    <div class="stats">📊 Total Items: {{ user.total_items }}</div>
+
+</div>
+
+<!-- RIGHT -->
+<div class="right">
+
+    <h2>✏️ Edit Profile</h2>
+
+    <label>Full Name</label>
+    <input type="text" value="{{ user.name }}">
+
+    <label>Username</label>
+    <input type="text" value="{{ user.username }}" disabled>
+
+    <label>Email</label>
+    <input type="email" value="{{ user.email }}">
+
+    <button>💾 Update Profile</button>
+
+    <br><br>
+
+    <div style="background:#f5f2ec;padding:10px;border-radius:10px;">
+        <p>📅 Created: {{ user.created }}</p>
+        <p>✅ Status: Active</p>
+    </div>
+
+</div>
+
+</div>
+
+</body>
+</html>
